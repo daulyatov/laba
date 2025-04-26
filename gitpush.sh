@@ -1,8 +1,8 @@
 # 1 пуш
 git init
 git add .
-git commit -m "iscan"
-git remote add origin git@github.com:daulyatov/ois3.git
+git commit -m "Iscan"
+git remote add origin git@github.com:daulyatov/laba.git
 git push origin master
 
 # след пуши 
