@@ -1,7 +1,7 @@
 # 1 пуш
 git init
 git add .
-git commit -m "Ois"
+git commit -m "iscan"
 git remote add origin git@github.com:daulyatov/ois3.git
 git push origin master
 
