@@ -1,0 +1,53 @@
+{% extends 'incidents/base.html' %}
+
+{% block content %}
+<div class="header">
+    <h1>{{ incident.name }}</h1>
+    <div>
+        <span class="status status-{{ incident.status }}">
+            {% if incident.status == 'pending' %}
+                Not Processed
+            {% elif incident.status == 'processing' %}
+                Processing
+            {% elif incident.status == 'completed' %}
+                {% if incident.faces_found %}
+                    Faces Found
+                {% else %}
+                    No Faces Found
+                {% endif %}
+            {% else %}
+                Failed
+            {% endif %}
+        </span>
+        <a href="{% url 'home' %}" class="btn btn-primary">Back to List</a>
+    </div>
+</div>
+
+<div class="incident-info">
+    <p><strong>Uploaded:</strong> {{ incident.created_at }}</p>
+    {% if incident.processed_at %}
+    <p><strong>Processed:</strong> {{ incident.processed_at }}</p>
+    {% endif %}
+</div>
+
+{% if incident.status == 'pending' %}
+<form method="post" action="{% url 'incident_detail' incident.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Start Processing</button>
+</form>
+{% endif %}
+
+{% if incident.faces.all %}
+<h2>Detected Faces</h2>
+<div class="face-grid">
+    {% for face in incident.faces.all %}
+    <div class="face-card">
+        <img src="{{ face.face_image.url }}" alt="Detected face">
+        <p>Time: {{ face.timestamp|floatformat:2 }}s</p>
+    </div>
+    {% endfor %}
+</div>
+{% elif incident.status == 'completed' %}
+<p>No faces were detected in this video.</p>
+{% endif %}
+{% endblock %} 

@@ -1,0 +1,50 @@
+{% extends 'incidents/base.html' %}
+
+{% block content %}
+<div class="header">
+    <h1>Video Surveillance System</h1>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="name">Incident Name:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+        <label for="video">Video File:</label>
+        <input type="file" id="video" name="video" accept="video/*" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload Video</button>
+</form>
+
+<h2>Recent Incidents</h2>
+{% for incident in incidents %}
+<div class="incident-card">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3><a href="{% url 'incident_detail' incident.pk %}">{{ incident.name }}</a></h3>
+        <span class="status status-{{ incident.status }}">
+            {% if incident.status == 'pending' %}
+                Not Processed
+            {% elif incident.status == 'processing' %}
+                Processing
+            {% elif incident.status == 'completed' %}
+                {% if incident.faces_found %}
+                    Faces Found
+                {% else %}
+                    No Faces Found
+                {% endif %}
+            {% else %}
+                Failed
+            {% endif %}
+        </span>
+    </div>
+    <p>Uploaded: {{ incident.created_at }}</p>
+    {% if incident.processed_at %}
+    <p>Processed: {{ incident.processed_at }}</p>
+    {% endif %}
+</div>
+{% empty %}
+<p>No incidents found. Upload a video to get started.</p>
+{% endfor %}
+{% endblock %} 
